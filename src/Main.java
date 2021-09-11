@@ -1,17 +1,17 @@
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
 
-    private static HashMap<Item, Float> itemsINeedToProduce = new HashMap<>() {{
+    private static final HashMap<Item, Float> itemsINeedToProduce = new HashMap<>() {{
         //put(Material.Piano, 210f);
         //put(Material.Bed, 1f/220+1f/60);
         //put(Material.Wood_Frame, 1f);
         //put(Material.Piano, 1f/350);
-        put(Material.Bed, 175f);
+        put(Material.Table, 4f);
+        put(Material.Bench, 3f);
     }};
-    private static final Set<Item> itemsNotSeparate = newHashSet();
+    private static final Set<Item> itemsNotSeparate = newHashSet(Material.Nails);
 
 
     public static void main(String[] args) {
@@ -20,17 +20,17 @@ public class Main {
         //START
         printItems();
         reBase(1);
-        System.out.println("Замена\n");
-        replaceOres();
+        //System.out.println("Замена\n");
+        //replaceOres();
         reBase(1);
         //END
         long end = System.currentTimeMillis();
-        System.out.println(String.format("Выполнено за %dms", end-start));
+        System.out.printf("Выполнено за %dms%n", end-start);
     }
 
     private static void reBase(int tries) {
         if (tries >= 50) return;
-        Optional<Map.Entry<Item, Float>> res = itemsINeedToProduce.entrySet().stream().filter(e -> e.getKey().getCraft() != null).findFirst();
+        Optional<Map.Entry<Item, Float>> res = itemsINeedToProduce.entrySet().stream().filter(e -> e.getKey().getCraft() != null && !itemsNotSeparate.contains(e.getKey())).findFirst();
         Map.Entry<Item, Float> entry = null;
         if (res.isPresent()) entry = res.get();
         if (entry != null) {
@@ -42,7 +42,7 @@ public class Main {
         }
 
         printItems();
-        if (itemsINeedToProduce.keySet().stream().anyMatch(item -> item.getCraft() != null)) reBase(tries+1);
+        if (itemsINeedToProduce.keySet().stream().anyMatch(item -> item.getCraft() != null && !itemsNotSeparate.contains(item))) reBase(tries+1);
     }
 
     private static void replaceOres() {
@@ -67,7 +67,7 @@ public class Main {
 
     private static void printItems() {
         itemsINeedToProduce.forEach((item, amount) -> {
-            String msg = (item.getCraft() == null ? "\033[0;31;1m" : "\033[0;33;1m") + String.format(("%-" + (Item.getMaxNameLength() + 2) + "s"), item.getName()) + "\033[0;32;1m" + amount + "\033[0m";
+            String msg = (item.getCraft() == null || itemsNotSeparate.contains(item) ? "\033[0;31;1m" : "\033[0;33;1m") + String.format(("%-" + (Item.getMaxNameLength() + 2) + "s"), item.getName()) + "\033[0;32;1m" + amount + "\033[0m";
             System.out.println(msg);
         });
         System.out.println();

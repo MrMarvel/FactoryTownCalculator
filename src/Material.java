@@ -7,7 +7,7 @@ public class Material {
     public static final Item Iron = new Item(null, "Железо");
     public static final Item Copper = new Item(null, "Медь");
     //T1
-    public static final Item Fire_Log = new Item(new HashMap<>(){{put(Wood, 1f/6);}}, "Бревно");
+    public static final Item Fire_Log = new Item(new HashMap<>(){{put(Wood, 1f/6);}}, "Дрова");
     public static final Item Pillar = new Item(new HashMap<>(){{put(Wood, 1f);}}, "Балка(Дерево)");
     //T2
     public static final Item Plank = new Item(new HashMap<>(){{put(Pillar, 2f/7);}},"Планка");
